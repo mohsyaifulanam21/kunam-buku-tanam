@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KUNAM Buku Tanam</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: url('https://drive.google.com/file/d/1191p44syIyg3fnhar4RR0wA7jwmZ6GrP/view?usp=sharing') center/cover fixed no-repeat;
+      background-size: cover;
+      padding: 20px;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #2c6f21;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #2c6f21;
+      color: white;
+      font-weight: bold;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #22551a;
+    }
+
+    .status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>KUNAM Buku Tanam</h1>
+    <form id="tanamForm">
+      <label for="growerLeader">Grower Leader</label>
+      <input type="text" id="growerLeader" required>
+
+      <label for="korlap">Korlap</label>
+      <input type="text" id="korlap" required>
+
+      <label for="fa">FA</label>
+      <select id="fa" required>
+        <option value="">-- Pilih FA --</option>
+        <option value="Anam">Anam</option>
+        <option value="Muzammil">Muzammil</option>
+        <option value="Lukman">Lukman</option>
+        <option value="Irfan">Irfan</option>
+        <option value="Jais">Jais</option>
+        <option value="Hilal">Hilal</option>
+        <option value="Faqih">Faqih</option>
+        <option value="Heru">Heru</option>
+        <option value="Other">Other (ketik di bawah)</option>
+      </select>
+      <input type="text" id="faOther" placeholder="Jika pilih 'Other', isi di sini" style="display:none; margin-top:5px;">
+
+      <label for="hybrid">Hybrid</label>
+      <select id="hybrid" required>
+        <option value="">-- Pilih Hybrid --</option>
+        <option value="TYA">TYA</option>
+        <option value="TYB">TYB</option>
+        <option value="TYC">TYC</option>
+        <option value="TYL">TYL</option>
+        <option value="TYM">TYM</option>
+      </select>
+
+      <label for="lokasi">Lokasi</label>
+      <input type="text" id="lokasi" required>
+
+      <label for="blok">Blok</label>
+      <input type="text" id="blok" required>
+
+      <label for="namaPetani">Nama Petani</label>
+      <input type="text" id="namaPetani" required>
+
+      <label for="noHp">No HP</label>
+      <input type="tel" id="noHp" required>
+
+      <label for="luas">Luas (ha)</label>
+      <input type="number" id="luas" step="0.01" min="0" required>
+
+      <label for="tanggalTanam">Tanggal Tanam</label>
+      <input type="date" id="tanggalTanam" required>
+
+      <label for="tanamanSebelumnya">Tanaman Sebelumnya</label>
+      <select id="tanamanSebelumnya" required>
+        <option value="">-- Pilih --</option>
+        <option value="Corn">Corn</option>
+        <option value="Non corn">Non corn</option>
+      </select>
+
+      <label for="olahTanah">Olah Tanah</label>
+      <select id="olahTanah" required>
+        <option value="">-- Pilih --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="bedding">Bedding</label>
+      <select id="bedding" required>
+        <option value="">-- Pilih --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+
+      <label for="rasio">Rasio</label>
+      <select id="rasio" required>
+        <option value="">-- Pilih Rasio --</option>
+        <option value="4:2">4:2</option>
+        <option value="5:2">5:2</option>
+        <option value="6:2">6:2</option>
+        <option value="6:2+1">6:2+1</option>
+        <option value="full female">full female</option>
+      </select>
+
+      <label for="kmlKeBroker">KML ke Broker</label>
+      <select id="kmlKeBroker" required>
+        <option value="">-- Pilih --</option>
+        <option value="Done">Done</option>
+        <option value="Not Yet">Not Yet</option>
+      </select>
+
+      <button type="submit">Simpan ke Google Sheet</button>
+    </form>
+
+    <div id="status" class="status"></div>
+  </div>
+
+  <script>
+    document.getElementById('fa').addEventListener('change', function() {
+      const otherInput = document.getElementById('faOther');
+      if (this.value === 'Other') {
+        otherInput.style.display = 'block';
+        otherInput.required = true;
+      } else {
+        otherInput.style.display = 'none';
+        otherInput.required = false;
+        otherInput.value = '';
+      }
+    });
+
+    document.getElementById('tanamForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const fa = document.getElementById('fa').value;
+      const faValue = fa === 'Other' ? document.getElementById('faOther').value : fa;
+
+      const data = {
+        growerLeader: document.getElementById('growerLeader').value,
+        korlap: document.getElementById('korlap').value,
+        fa: faValue,
+        hybrid: document.getElementById('hybrid').value,
+        lokasi: document.getElementById('lokasi').value,
+        blok: document.getElementById('blok').value,
+        namaPetani: document.getElementById('namaPetani').value,
+        noHp: document.getElementById('noHp').value,
+        luas: document.getElementById('luas').value,
+        tanggalTanam: document.getElementById('tanggalTanam').value,
+        tanamanSebelumnya: document.getElementById('tanamanSebelumnya').value,
+        olahTanah: document.getElementById('olahTanah').value,
+        bedding: document.getElementById('bedding').value,
+        rasio: document.getElementById('rasio').value,
+        kmlKeBroker: document.getElementById('kmlKeBroker').value
+      };
+
+      const statusDiv = document.getElementById('status');
+      statusDiv.textContent = 'Mengirim data...';
+      statusDiv.className = 'status';
+
+      try {
+        // GANTI DENGAN URL WEB APP KAMU DARI GOOGLE APPS SCRIPT
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzUparz757PTh2QFLcZ6kPoQZVmvO40lA0e2qt1fDILXJdFYFmTknEaeP60LiNnx8bwIw/exec', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+          statusDiv.textContent = '✅ Data berhasil disimpan!';
+          statusDiv.className = 'status success';
+          document.getElementById('tanamForm').reset();
+          document.getElementById('faOther').style.display = 'none';
+        } else {
+          throw new Error('Gagal menyimpan');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        statusDiv.textContent = '❌ Gagal mengirim data. Cek koneksi atau izin Apps Script.';
+        statusDiv.className = 'status error';
+      }
+    });
+  </script>
+</body>
+</html>
